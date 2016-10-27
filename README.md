@@ -14,3 +14,6 @@ Allow quick search method or properies in current file (Default Ctrl + G).
 - select file with Up/Down keys in filtred list;
 
 - show method or property details (params for method)
+
+Release
+https://github.com/AlexandrM/VSExpertVSIX/releases/tag/v1.0
