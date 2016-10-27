@@ -7,8 +7,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Collections;
 using System.Text.RegularExpressions;
+using System.Linq;
+using System.Linq.Expressions;
 
 using EnvDTE80;
+using System.Collections.Generic;
 
 namespace ASEExpertVS2005
 {
@@ -18,13 +21,13 @@ namespace ASEExpertVS2005
 	public class ASListView : ListView
 	{
 
-		private ArrayList _list = null;
-		private ArrayList _activeList = null;
+		private List<ListItemData> _list = null;
+		private List<ListItemData> _activeList = null;
 
-		public void SetList(ArrayList list)
+		public void SetList(List<ListItemData> list)
 		{
 			_list = list;
-			_activeList = new ArrayList();
+			_activeList = new List<ListItemData>();
 			_activeList.AddRange(_list);
 
 			refresh();
@@ -34,15 +37,16 @@ namespace ASEExpertVS2005
 		{
 			try
 			{
-				_activeList.Clear();
-				foreach(ListItemData data in _list)
-				{
-					if (filter == "") 
-						_activeList.Add(data);
-					else
-                        if (data.Name.ToUpper().IndexOf(filter.ToUpper()) > -1)
-						    _activeList.Add(data);
-				}
+                if (filter == "")
+                {
+                    _activeList.AddRange(_list);
+                    return;
+                }
+
+                _activeList.Clear();
+
+                var f = filter.ToLower().Split(' ');
+                _activeList = _list.Where(x => f.All(x.Name.ToLower().Contains)).ToList();
 			}
 			catch
 			{

@@ -11,6 +11,7 @@ using EnvDTE;
 using EnvDTE80;
 
 using ASEExpertVS2005;
+using System.Collections.Generic;
 
 namespace ASEExpertVS2005.CodeItemsList
 {
@@ -261,7 +262,7 @@ namespace ASEExpertVS2005.CodeItemsList
 
 			Document Doc = VSExpertVSIX.SolutionList.DTE.ActiveDocument;
 
-			ArrayList result = new ArrayList();
+            List<ListItemData> result = new List<ListItemData>();
 			foreach(CodeElement e in VSExpertVSIX.SolutionList.DTE.ActiveDocument.ProjectItem.FileCodeModel.CodeElements)
 			{
 				result.AddRange(FillElements(e));
@@ -272,10 +273,10 @@ namespace ASEExpertVS2005.CodeItemsList
 			return this.ShowDialog();
 		}
 
-		private ArrayList FillElements(CodeElement startElement)
+		private List<ListItemData> FillElements(CodeElement startElement)
 		{
 
-			ArrayList result = new ArrayList();			
+            List<ListItemData> result = new List<ListItemData>();			
 			try
 			{
 				string s = "";

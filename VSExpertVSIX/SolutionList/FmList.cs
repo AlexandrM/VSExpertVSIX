@@ -1,17 +1,12 @@
 using System;
-//using Extensibility;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.Diagnostics;
 using System.IO;
 using System.Collections;
 using Microsoft.Win32;
+using System.Linq;
 
 using EnvDTE;
-using EnvDTE80;
-
-//using ASE.VS.Core;
-using ASEExpertVS2005;
+using System.Collections.Generic;
 
 namespace ASEExpertVS2005.SolutionList
 {
@@ -20,7 +15,6 @@ namespace ASEExpertVS2005.SolutionList
 	/// </summary>
 	public class FmList : System.Windows.Forms.Form
 	{
-		private bool _onlyOpenned = false;
         private Stimulsoft.Controls.StiTextBox textBox;
 		private System.Windows.Forms.Label label1;
         private ASEExpertVS2005.ASListView listView;
@@ -28,12 +22,11 @@ namespace ASEExpertVS2005.SolutionList
 		private System.Windows.Forms.ColumnHeader lvcolFile;
 		private System.Windows.Forms.ImageList imageList;
 		private System.Windows.Forms.Panel panel1;
-        private Stimulsoft.Controls.StiButton btClose;
         private Stimulsoft.Controls.StiButton btCancel;
         private Stimulsoft.Controls.StiButton btOk;
-        private Stimulsoft.Controls.StiButton btOnlyOpenned;
-        private Stimulsoft.Controls.StiCheckBox cbSaveOnlyOppened;
-		private System.ComponentModel.IContainer components;
+        private Stimulsoft.Controls.StiButton btnIgnoreList;
+        private Stimulsoft.Controls.StiButton btAddIgnore;
+        private System.ComponentModel.IContainer components;
 
 		public FmList()
 		{
@@ -66,16 +59,15 @@ namespace ASEExpertVS2005.SolutionList
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FmList));
             this.textBox = new Stimulsoft.Controls.StiTextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.listView = new ASEExpertVS2005.ASListView();
-            this.lvcolProject = new System.Windows.Forms.ColumnHeader();
-            this.lvcolFile = new System.Windows.Forms.ColumnHeader();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
-            this.cbSaveOnlyOppened = new Stimulsoft.Controls.StiCheckBox();
-            this.btOnlyOpenned = new Stimulsoft.Controls.StiButton();
-            this.btClose = new Stimulsoft.Controls.StiButton();
             this.btCancel = new Stimulsoft.Controls.StiButton();
             this.btOk = new Stimulsoft.Controls.StiButton();
+            this.btnIgnoreList = new Stimulsoft.Controls.StiButton();
+            this.btAddIgnore = new Stimulsoft.Controls.StiButton();
+            this.listView = new ASEExpertVS2005.ASListView();
+            this.lvcolProject = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvcolFile = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -98,6 +90,78 @@ namespace ASEExpertVS2005.SolutionList
             this.label1.Size = new System.Drawing.Size(652, 13);
             this.label1.TabIndex = 3;
             this.label1.Text = "Element:";
+            // 
+            // imageList
+            // 
+            this.imageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList.ImageStream")));
+            this.imageList.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList.Images.SetKeyName(0, "");
+            this.imageList.Images.SetKeyName(1, "");
+            this.imageList.Images.SetKeyName(2, "");
+            this.imageList.Images.SetKeyName(3, "");
+            this.imageList.Images.SetKeyName(4, "");
+            this.imageList.Images.SetKeyName(5, "");
+            this.imageList.Images.SetKeyName(6, "");
+            this.imageList.Images.SetKeyName(7, "");
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.btAddIgnore);
+            this.panel1.Controls.Add(this.btnIgnoreList);
+            this.panel1.Controls.Add(this.btCancel);
+            this.panel1.Controls.Add(this.btOk);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 292);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(652, 32);
+            this.panel1.TabIndex = 2;
+            // 
+            // btCancel
+            // 
+            this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btCancel.Location = new System.Drawing.Point(459, 3);
+            this.btCancel.Name = "btCancel";
+            this.btCancel.Size = new System.Drawing.Size(120, 23);
+            this.btCancel.TabIndex = 3;
+            this.btCancel.Text = "&Cancel <Escape>";
+            this.btCancel.UseVisualStyleBackColor = false;
+            // 
+            // btOk
+            // 
+            this.btOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btOk.Location = new System.Drawing.Point(5, 3);
+            this.btOk.Name = "btOk";
+            this.btOk.Size = new System.Drawing.Size(120, 23);
+            this.btOk.TabIndex = 0;
+            this.btOk.Text = "&Ok <Return>";
+            this.btOk.UseVisualStyleBackColor = false;
+            this.btOk.Click += new System.EventHandler(this.btOk_Click);
+            // 
+            // btnIgnoreList
+            // 
+            this.btnIgnoreList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnIgnoreList.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnIgnoreList.Location = new System.Drawing.Point(162, 3);
+            this.btnIgnoreList.Name = "btnIgnoreList";
+            this.btnIgnoreList.Size = new System.Drawing.Size(120, 23);
+            this.btnIgnoreList.TabIndex = 3;
+            this.btnIgnoreList.Text = "Ignore list";
+            this.btnIgnoreList.UseVisualStyleBackColor = false;
+            this.btnIgnoreList.Click += new System.EventHandler(this.btnIgnoreList_Click);
+            // 
+            // btAddIgnore
+            // 
+            this.btAddIgnore.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btAddIgnore.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btAddIgnore.Location = new System.Drawing.Point(288, 3);
+            this.btAddIgnore.Name = "btAddIgnore";
+            this.btAddIgnore.Size = new System.Drawing.Size(120, 23);
+            this.btAddIgnore.TabIndex = 3;
+            this.btAddIgnore.Text = "Add to ignore";
+            this.btAddIgnore.UseVisualStyleBackColor = false;
+            this.btAddIgnore.Click += new System.EventHandler(this.btAddIgnore_Click);
             // 
             // listView
             // 
@@ -130,89 +194,6 @@ namespace ASEExpertVS2005.SolutionList
             this.lvcolFile.Text = "File";
             this.lvcolFile.Width = 154;
             // 
-            // imageList
-            // 
-            this.imageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList.ImageStream")));
-            this.imageList.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageList.Images.SetKeyName(0, "");
-            this.imageList.Images.SetKeyName(1, "");
-            this.imageList.Images.SetKeyName(2, "");
-            this.imageList.Images.SetKeyName(3, "");
-            this.imageList.Images.SetKeyName(4, "");
-            this.imageList.Images.SetKeyName(5, "");
-            this.imageList.Images.SetKeyName(6, "");
-            this.imageList.Images.SetKeyName(7, "");
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.cbSaveOnlyOppened);
-            this.panel1.Controls.Add(this.btOnlyOpenned);
-            this.panel1.Controls.Add(this.btClose);
-            this.panel1.Controls.Add(this.btCancel);
-            this.panel1.Controls.Add(this.btOk);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 292);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(652, 32);
-            this.panel1.TabIndex = 2;
-            // 
-            // cbSaveOnlyOppened
-            // 
-            this.cbSaveOnlyOppened.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cbSaveOnlyOppened.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cbSaveOnlyOppened.Image = null;
-            this.cbSaveOnlyOppened.Location = new System.Drawing.Point(372, 4);
-            this.cbSaveOnlyOppened.Name = "cbSaveOnlyOppened";
-            this.cbSaveOnlyOppened.Size = new System.Drawing.Size(148, 16);
-            this.cbSaveOnlyOppened.TabIndex = 4;
-            this.cbSaveOnlyOppened.Text = "Save state only oppened";
-            // 
-            // btOnlyOpenned
-            // 
-            this.btOnlyOpenned.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btOnlyOpenned.Location = new System.Drawing.Point(249, 4);
-            this.btOnlyOpenned.Name = "btOnlyOpenned";
-            this.btOnlyOpenned.Size = new System.Drawing.Size(120, 23);
-            this.btOnlyOpenned.TabIndex = 2;
-            this.btOnlyOpenned.Text = "Only openned <F12>";
-            this.btOnlyOpenned.UseVisualStyleBackColor = false;
-            this.btOnlyOpenned.Click += new System.EventHandler(this.btOnlyOpenned_Click);
-            // 
-            // btClose
-            // 
-            this.btClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btClose.DialogResult = System.Windows.Forms.DialogResult.Abort;
-            this.btClose.Location = new System.Drawing.Point(126, 4);
-            this.btClose.Name = "btClose";
-            this.btClose.Size = new System.Drawing.Size(120, 23);
-            this.btClose.TabIndex = 1;
-            this.btClose.Text = "C&lose <Delete>";
-            this.btClose.UseVisualStyleBackColor = false;
-            this.btClose.Click += new System.EventHandler(this.btClose_Click);
-            // 
-            // btCancel
-            // 
-            this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btCancel.Location = new System.Drawing.Point(530, 4);
-            this.btCancel.Name = "btCancel";
-            this.btCancel.Size = new System.Drawing.Size(120, 23);
-            this.btCancel.TabIndex = 3;
-            this.btCancel.Text = "&Cancel <Escape>";
-            this.btCancel.UseVisualStyleBackColor = false;
-            // 
-            // btOk
-            // 
-            this.btOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btOk.Location = new System.Drawing.Point(2, 4);
-            this.btOk.Name = "btOk";
-            this.btOk.Size = new System.Drawing.Size(120, 23);
-            this.btOk.TabIndex = 0;
-            this.btOk.Text = "&Ok <Return>";
-            this.btOk.UseVisualStyleBackColor = false;
-            this.btOk.Click += new System.EventHandler(this.btOk_Click);
-            // 
             // FmList
             // 
             this.AcceptButton = this.btOk;
@@ -228,9 +209,9 @@ namespace ASEExpertVS2005.SolutionList
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Project items";
-            this.Load += new System.EventHandler(this.FmList_Load);
             this.Activated += new System.EventHandler(this.FmList_Activated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FmList_FormClosing);
+            this.Load += new System.EventHandler(this.FmList_Load);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -238,12 +219,16 @@ namespace ASEExpertVS2005.SolutionList
 		}
 		#endregion
 
-		private ArrayList GetItem(ProjectItems prj, string prjName)
+		private List<ListItemData> GetItem(ProjectItems prj, string prjName)
 		{
-			ArrayList result = new ArrayList();
+            List<ListItemData> result = new List<ListItemData>();
 
-			try
-			{
+            if (ignoreList != null)
+                if (ignoreList.Contains(prjName.ToLower()))
+                    return result;
+
+            try
+            {
 				for(int iProjectItem = 0; iProjectItem < prj.Count; iProjectItem++)
 				{
 					ProjectItem prjItem = prj.Item(iProjectItem + 1);
@@ -266,8 +251,6 @@ namespace ASEExpertVS2005.SolutionList
 					{
 						int img = -1;
 						int add = 0;
-						if (_onlyOpenned)
-							if (prjItem.Document == null) continue;
 
 						if (prjItem.Document != null) 
                             add = 4;
@@ -280,10 +263,7 @@ namespace ASEExpertVS2005.SolutionList
 						if (ob.Value.ToString() == "Component") 
                             img = 3 + add;
 
-						//if (img == -1) 
-                            //continue;
-
-						result.Add(new ListItemData(prjItem.Name, img, prjName, prjItem));
+                        result.Add(new ListItemData(prjItem.Name, img, prjName, prjItem));
 					}
 
 					if (prjItem.ProjectItems != null)
@@ -304,9 +284,16 @@ namespace ASEExpertVS2005.SolutionList
 			return result;
 		}
 
+        public string[] ignoreList = null;
 		public void Fill()
 		{
-			ArrayList list = new ArrayList();
+            FileInfo fi = new FileInfo(VSExpertVSIX.SolutionList.DTE.Solution.FileName);
+            if (File.Exists(fi.DirectoryName + "\\.vs.expert.ignore.txt"))
+            {
+                var s = File.ReadAllText(fi.DirectoryName + "\\.vs.expert.ignore.txt");
+                ignoreList = s.Replace("\n", "").ToLower().Split('\r');
+            }
+            List<ListItemData> list = new List<ListItemData>();
 
 			for(int iProjects = 0; iProjects < VSExpertVSIX.SolutionList.DTE.Solution.Projects.Count; iProjects++)
 			{
@@ -352,21 +339,12 @@ namespace ASEExpertVS2005.SolutionList
 
 		private void textBox_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
 		{
-			if ((e.KeyCode == Keys.F12)	& (e.Modifiers != Keys.Control))
-				btOnlyOpenned.PerformClick();
-
-			if (e.KeyCode == Keys.Delete)		
-                btClose.PerformClick();
-
 			if (e.Modifiers == Keys.Alt)
 			{
 				e.Handled = true;
 
 				if (e.KeyCode == Keys.O)	
                     btOk.PerformClick();
-
-				if (e.KeyCode == Keys.L)	
-                    btClose.PerformClick();
 
 				if (e.KeyCode == Keys.C)	
                     btCancel.PerformClick();
@@ -402,8 +380,21 @@ namespace ASEExpertVS2005.SolutionList
 			textBox.Focus();
 		}
 
-		private void FmList_Load(object sender, System.EventArgs e)
+		private void FmList_Activated(object sender, System.EventArgs e)
 		{
+		}
+
+		public DialogResult DoDialog()
+		{
+			textBox.Text = "";
+
+			Fill();
+
+			return ShowDialog();
+		}
+
+        private void FmList_Load(object sender, System.EventArgs e)
+        {
             RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\ASE\ASE Expert VS2005\SolutionItems\");
             if (key == null)
             {
@@ -411,13 +402,12 @@ namespace ASEExpertVS2005.SolutionList
                 return;
             }
 
-			try
-			{
+            try
+            {
                 Top = System.Convert.ToInt32(key.GetValue("FormTop"));
                 Left = System.Convert.ToInt32(key.GetValue("FormLeft"));
                 Width = System.Convert.ToInt32(key.GetValue("FormWidth"));
-				Height = System.Convert.ToInt32(key.GetValue("FormHeight"));
-                cbSaveOnlyOppened.Checked = System.Convert.ToBoolean(key.GetValue("SaveStateOnlyOppened"));
+                Height = System.Convert.ToInt32(key.GetValue("FormHeight"));
 
                 for (int i = 0; i < listView.Columns.Count; i++)
                 {
@@ -427,40 +417,10 @@ namespace ASEExpertVS2005.SolutionList
                         listView.Columns[i].Width = 20;
                 }
             }
-			catch
-			{
-			}
-		}
-
-		private void btOnlyOpenned_Click(object sender, System.EventArgs e)
-		{
-			_onlyOpenned = !_onlyOpenned;
-			if (_onlyOpenned)
-				btOnlyOpenned.Text = "All <F12>";
-			else
-				btOnlyOpenned.Text = "Only opened <F12>";
-
-			Fill();
-			listView.SetFilter(textBox.Text);
-		}
-
-		private void FmList_Activated(object sender, System.EventArgs e)
-		{
-		}
-
-		public DialogResult DoDialog()
-		{
-			textBox.Text = "";
-			if (!cbSaveOnlyOppened.Checked)
-			{
-				_onlyOpenned = false;
-				btOnlyOpenned.Text = "Only opened <F12>";
-			}
-
-			Fill();
-
-			return ShowDialog();
-		}
+            catch
+            {
+            }
+        }
 
         private void FmList_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -471,7 +431,6 @@ namespace ASEExpertVS2005.SolutionList
                 key.SetValue("FormHeight", Height);
                 key.SetValue("FormTop", Top);
                 key.SetValue("FormLeft", Left);
-                key.SetValue("SaveStateOnlyOppened", cbSaveOnlyOppened.Checked);
 
                 for (int i = 0; i < listView.Columns.Count; i++)
                     key.SetValue("SolutionItemsColumnWidth" + i.ToString(), listView.Columns[i].Width);
@@ -480,5 +439,27 @@ namespace ASEExpertVS2005.SolutionList
             {
             }
         }
-	}
+
+        private void btnIgnoreList_Click(object sender, EventArgs e)
+        {
+            FileInfo fi = new FileInfo(VSExpertVSIX.SolutionList.DTE.Solution.FileName);
+            if (!File.Exists(fi.DirectoryName + "\\.vs.expert.ignore.txt"))
+            {
+                var s = File.CreateText(fi.DirectoryName + "\\.vs.expert.ignore.txt");
+                s.Close();
+            }
+
+            System.Diagnostics.Process.Start(fi.DirectoryName + "\\.vs.expert.ignore.txt");
+        }
+
+        private void btAddIgnore_Click(object sender, EventArgs e)
+        {
+            if (listView.SelectedData == null)
+                return;
+
+            FileInfo fi = new FileInfo(VSExpertVSIX.SolutionList.DTE.Solution.FileName);
+            File.AppendAllLines(fi.DirectoryName + "\\.vs.expert.ignore.txt", new string[] { listView.SelectedData.Datas[0].ToString() });
+            btnIgnoreList.PerformClick();
+        }
+    }
 }
