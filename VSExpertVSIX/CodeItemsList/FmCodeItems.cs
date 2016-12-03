@@ -285,20 +285,28 @@ namespace ASEExpertVS2005.CodeItemsList
 				{
 					case vsCMElement.vsCMElementNamespace:
 						CodeNamespace cn = (CodeNamespace) startElement;
-						foreach(CodeElement element in cn.Members)
-							result.AddRange(FillElements(element));
+                        foreach (CodeElement element in cn.Members)
+                        {
+                            result.AddRange(FillElements(element));
+                        }
 						break;
 
 					case vsCMElement.vsCMElementClass:			
 						CodeClass cc = (CodeClass) startElement;
-						foreach(CodeElement element in cc.Members)
-							result.AddRange(FillElements(element));
+                        result.Add(new ListItemData(startElement.Name, 0, String.Format("{0} ({1})", cc.Name, "class"), "class", startElement));
+                        foreach (CodeElement element in cc.Members)
+                        {
+                            result.AddRange(FillElements(element));
+                        }
 						break;
 
 					case vsCMElement.vsCMElementInterface:
 						CodeInterface ci = (CodeInterface) startElement;
-						foreach(CodeElement element in ci.Members)
-							result.AddRange(FillElements(element));
+                        result.Add(new ListItemData(startElement.Name, 0, String.Format("{0} ({1})", ci.Name, "interface"), "interface", startElement));
+                        foreach (CodeElement element in ci.Members)
+                        {
+                            result.AddRange(FillElements(element));
+                        }
 						break;
 
 					case vsCMElement.vsCMElementFunction:
@@ -382,7 +390,8 @@ namespace ASEExpertVS2005.CodeItemsList
 
             return s;
         }
-		private string FunctionToString(CodeFunction codeFunction)
+
+        private string FunctionToString(CodeFunction codeFunction)
 		{
 			try
 			{
