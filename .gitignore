@@ -3,3 +3,5 @@ VSExpertVSIX/bin/
 VSExpertVSIX/obj/
 packages/
 VSPackage1/
+.vs/
+VSExpertVSIX/VSExpertVSIX.csproj.user
