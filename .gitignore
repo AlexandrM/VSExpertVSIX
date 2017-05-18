@@ -5,3 +5,5 @@ packages/
 VSPackage1/
 .vs/
 VSExpertVSIX/VSExpertVSIX.csproj.user
+Backup/
+UpgradeLog.htm
