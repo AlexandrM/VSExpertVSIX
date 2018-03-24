@@ -376,7 +376,7 @@ namespace ASEExpertVS2005.SolutionList
 		{
 			base.OnActivated (e);
 
-			textBox.Text = "";
+			//textBox.Text = "";
 			textBox.Focus();
 		}
 
@@ -384,13 +384,14 @@ namespace ASEExpertVS2005.SolutionList
 		{
 		}
 
-		public DialogResult DoDialog()
+		public DialogResult DoDialog(string filter = "")
 		{
-			textBox.Text = "";
+			textBox.Text = filter;
 
 			Fill();
+            listView.SetFilter(textBox.Text);
 
-			return ShowDialog();
+            return ShowDialog();
 		}
 
         private void FmList_Load(object sender, System.EventArgs e)

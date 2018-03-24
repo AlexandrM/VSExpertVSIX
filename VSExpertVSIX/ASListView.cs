@@ -45,8 +45,11 @@ namespace ASEExpertVS2005
 
                 _activeList.Clear();
 
-                var f = filter.ToLower().Split(' ');
-                _activeList = _list.Where(x => f.All(x.Name.ToLower().Contains)).ToList();
+                var filters = filter.Split('/');
+
+                var f1 = filters[0].ToLower().Split(' ');
+                var f2 = filters.Length > 1 ? filters[1].ToLower().Split(' ') : new string[0];
+                _activeList = _list.Where(x => f1.All(x.Name.ToLower().Contains) & (f2.Length == 0 || f2.All(x.Datas[0].ToString().ToLower().Contains))).ToList();
 			}
 			catch
 			{

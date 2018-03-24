@@ -65,9 +65,9 @@ namespace ASEExpertVS2005.CodeItemsList
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FmCodeItems));
             this.listView = new ASEExpertVS2005.ASListView();
-            this.lvcolName = new System.Windows.Forms.ColumnHeader();
-            this.lvcolDescription = new System.Windows.Forms.ColumnHeader();
-            this.lvcolComments = new System.Windows.Forms.ColumnHeader();
+            this.lvcolName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvcolDescription = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvcolComments = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.textBox = new Stimulsoft.Controls.StiTextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -238,8 +238,8 @@ namespace ASEExpertVS2005.CodeItemsList
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Code Elements";
-            this.Load += new System.EventHandler(this.FmCodeItems_Load);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FmCodeItems_FormClosing);
+            this.Load += new System.EventHandler(this.FmCodeItems_Load);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -247,7 +247,7 @@ namespace ASEExpertVS2005.CodeItemsList
 		}
 		#endregion
 	
-		public DialogResult DoDialog()
+		public DialogResult DoDialog(string filter = "")
 		{
             if (VSExpertVSIX.SolutionList.DTE.ActiveDocument == null) 
 				return DialogResult.Ignore;
@@ -269,8 +269,10 @@ namespace ASEExpertVS2005.CodeItemsList
 			}
 
 			listView.SetList(result);
+            textBox.Text = filter;
+            listView.SetFilter(textBox.Text);
 
-			return this.ShowDialog();
+            return this.ShowDialog();
 		}
 
 		private List<ListItemData> FillElements(CodeElement startElement)
@@ -551,7 +553,7 @@ namespace ASEExpertVS2005.CodeItemsList
 		{
 			base.OnActivated (e);
 
-			textBox.Text = "";
+			//textBox.Text = "";
 			textBox.Focus();
 		}
 

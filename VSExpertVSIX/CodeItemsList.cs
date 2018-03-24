@@ -10,6 +10,8 @@ using System.Globalization;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using ASEExpertVS2005.CodeItemsList;
+using EnvDTE;
+using EnvDTE80;
 
 namespace VSExpertVSIX
 {
@@ -32,7 +34,7 @@ namespace VSExpertVSIX
         /// VS Package that provides this command, not null.
         /// </summary>
         private readonly Package package;
-
+        public static DTE2 DTE;
         /// <summary>
         /// Initializes a new instance of the <see cref="CodeItemsList"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
@@ -46,6 +48,8 @@ namespace VSExpertVSIX
             }
 
             this.package = package;
+
+            DTE = Package.GetGlobalService(typeof(SDTE)) as DTE2;
 
             OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService != null)
@@ -95,7 +99,16 @@ namespace VSExpertVSIX
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            fmCodeItems.DoDialog();
+            var filter = "";
+            if ((DTE != null) && (DTE.ActiveDocument != null) && (DTE.ActiveDocument.Selection != null))
+            {
+                var textSelection = (DTE.ActiveDocument.Selection as TextSelection);
+                if (textSelection != null)
+                {
+                    filter = textSelection.Text;
+                }
+            }
+            fmCodeItems.DoDialog(filter);
         }
     }
 }

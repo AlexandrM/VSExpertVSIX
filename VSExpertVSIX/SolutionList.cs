@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using EnvDTE80;
 using ASEExpertVS2005.SolutionList;
+using EnvDTE;
 
 namespace VSExpertVSIX
 {
@@ -100,7 +101,16 @@ namespace VSExpertVSIX
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            fmList.DoDialog();
+            var filter = "";
+            if ((DTE != null) && (DTE.ActiveDocument != null) && (DTE.ActiveDocument.Selection != null))
+            {
+                var textSelection = (DTE.ActiveDocument.Selection as TextSelection);
+                if (textSelection != null)
+                {
+                    filter = textSelection.Text;
+                }
+            }
+            fmList.DoDialog(filter);
         }
     }
 }
